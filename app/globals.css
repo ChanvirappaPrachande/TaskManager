@@ -1,10 +1,8 @@
+/* ─── Imports ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ─── Tailwind Theme ─────────────────────────────────────────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,15 +10,601 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Design Tokens ──────────────────────────────────────────── */
+:root {
+  --background: #f5f0e8;
+  --foreground: #1a1208;
+
+  /* Core palette — warm ivory paper */
+  --bg-deep:       #ede8de;
+  --bg-base:       #f5f0e8;
+  --bg-surface:    #ede8de;
+  --bg-elevated:   #ffffff;
+  --bg-hover:      #faf7f2;
+
+  /* Borders */
+  --border-dim:    rgba(0,0,0,.06);
+  --border-soft:   rgba(0,0,0,.09);
+  --border-medium: rgba(0,0,0,.14);
+
+  /* Text */
+  --text-primary:  #1a1208;
+  --text-secondary:#6b5e4a;
+  --text-muted:    #a08c72;
+  --text-faint:    #c4b8a4;
+
+  /* Accent — terracotta */
+  --accent:        #c0623a;
+  --accent-bright: #d4703f;
+  --accent-dim:    rgba(192,98,58,.12);
+  --accent-glow:   rgba(192,98,58,.07);
+
+  /* Semantic */
+  --success:       #4a8a5c;
+  --success-dim:   rgba(74,138,92,.1);
+  --danger:        #b84040;
+  --danger-dim:    rgba(184,64,64,.1);
+
+  /* Typography */
+  --font-serif:    'Instrument Serif', Georgia, serif;
+  --font-sans:     'Inter', system-ui, sans-serif;
+
+  /* Spacing */
+  --radius-sm:     6px;
+  --radius-md:     10px;
+  --radius-lg:     14px;
+  --radius-xl:     20px;
+
+  /* Shadows */
+  --shadow-sm:     0 1px 3px rgba(0,0,0,.07);
+  --shadow-md:     0 4px 16px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.06);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.07);
+
+  /* Transitions */
+  --ease:          cubic-bezier(.25,.46,.45,.94);
+  --t-fast:        0.12s var(--ease);
+  --t-med:         0.22s var(--ease);
+  --t-slow:        0.4s var(--ease);
+}
+
+/* ─── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+html {
+  height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Page Layout ────────────────────────────────────────────── */
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 0 16px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 680px;
+  padding-top: 64px;
+}
+
+/* ─── Page Header ────────────────────────────────────────────── */
+.page-header {
+  margin-bottom: 48px;
+  animation: fadeSlideDown 0.6s var(--ease) both;
+}
+
+.page-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.6;
+}
+
+.page-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 7vw, 3.6rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.page-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.page-subtitle {
+  margin-top: 12px;
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+/* ─── Stats Bar ──────────────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  gap: 28px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-dim);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-value {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.67rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ─── Task Manager ───────────────────────────────────────────── */
+.task-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeSlideUp 0.5s 0.15s var(--ease) both;
+}
+
+/* ─── Task Form ──────────────────────────────────────────────── */
+.task-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-form {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: 5px 5px 5px 18px;
+  box-shadow: var(--shadow-md);
+  transition: border-color var(--t-med), box-shadow var(--t-med);
+}
+
+.task-form:focus-within {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-lg);
+}
+
+.task-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  caret-color: var(--accent);
+  min-width: 0;
+}
+
+.task-input::placeholder {
+  color: var(--text-faint);
+  font-weight: 300;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--t-fast), color var(--t-fast),
+              box-shadow var(--t-fast), opacity var(--t-fast), transform var(--t-fast);
+  padding: 10px 18px;
+}
+
+.btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.btn:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* Primary — terracotta */
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(192,98,58,.25);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-bright);
+  box-shadow: 0 4px 16px rgba(192,98,58,.35);
+}
+
+/* Ghost */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-soft);
+  padding: 6px 13px;
+  font-size: 0.75rem;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+/* Danger */
+.btn-danger {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border-color: rgba(184,64,64,.15);
+}
+
+/* ─── Errors ─────────────────────────────────────────────────── */
+.error-msg {
+  font-size: 0.75rem;
+  color: var(--danger);
+  padding: 4px 8px;
+  background: var(--danger-dim);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--danger);
+}
+.task-error { margin-top: 6px; margin-left: 36px; }
+
+/* ─── Filter Bar ─────────────────────────────────────────────── */
+.task-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 3px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all var(--t-fast);
+  letter-spacing: 0.02em;
+}
+
+.filter-btn:hover {
+  color: var(--text-secondary);
+  background: var(--bg-hover);
+}
+
+.filter-btn.active {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-count {
+  font-size: 0.67rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 100px;
+  background: rgba(0,0,0,.06);
+  color: var(--text-muted);
+  min-width: 20px;
+  text-align: center;
+}
+
+.filter-btn.active .filter-count {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* ─── Task List ──────────────────────────────────────────────── */
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ─── Task Item ──────────────────────────────────────────────── */
+.task-item {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: 13px 15px;
+  transition: background var(--t-med), border-color var(--t-med),
+              opacity var(--t-fast), box-shadow var(--t-med);
+  animation: taskSlideIn 0.25s var(--ease) both;
+}
+
+.task-item:hover {
+  border-color: var(--border-soft);
+  box-shadow: var(--shadow-sm);
+}
+
+.task-item.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.task-item.completed {
+  background: var(--bg-hover);
+  border-color: var(--border-dim);
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Custom checkbox */
+.task-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-medium);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--t-fast);
+}
+
+.task-checkbox:hover {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.task-checkbox:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.task-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 2px;
+  width: 5px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.task-title {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  word-break: break-word;
+  line-height: 1.45;
+  transition: color var(--t-med);
+}
+
+.task-item.completed .task-title {
+  color: var(--text-faint);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-faint);
+}
+
+.task-edit-input {
+  flex: 1;
+  background: var(--bg-surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  caret-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.task-item:hover .task-actions,
+.task-item:focus-within .task-actions {
+  opacity: 1;
+}
+
+.task-date {
+  font-size: 0.67rem;
+  color: var(--text-faint);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+  margin-left: 30px;
+}
+
+/* ─── Empty State ────────────────────────────────────────────── */
+.empty-state {
+  padding: 56px 24px;
+  text-align: center;
+  border: 1px dashed var(--border-soft);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+
+.empty-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  opacity: 0.3;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 300;
+}
+
+.empty-state strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+/* ─── Divider ────────────────────────────────────────────────── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-soft), transparent);
+  margin: 4px 0;
+}
+
+/* ─── Progress Bar ───────────────────────────────────────────── */
+.progress-wrapper {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progress-label {
+  font-size: 0.67rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-track {
+  height: 3px;
+  background: var(--border-dim);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #e88a60);
+  border-radius: 100px;
+  transition: width 0.5s var(--ease);
+}
+
+/* ─── Animations ─────────────────────────────────────────────── */
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes taskSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,.2); }
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .container { padding-top: 40px; }
+  .task-form { flex-direction: column; padding: 12px 14px; gap: 10px; }
+  .btn-primary { width: 100%; }
+  .task-actions { opacity: 1; }
+  .stats-bar { gap: 16px; }
 }

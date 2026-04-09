@@ -1,36 +1,207 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Manager
 
-## Getting Started
+A full-stack Task Manager built with **Next.js 15 (App Router)**, **Prisma**, and **PostgreSQL**.
 
-First, run the development server:
+---
+
+# Tech Stack
+
+| Layer    | Technology                      |
+| -------- | ------------------------------- |
+| Frontend | Next.js 16, React, CSS          |
+| Backend  | Next.js API Routes (App Router) |
+| ORM      | Prisma                          |
+| Database | PostgreSQL                      |
+| API Docs | Swagger / OpenAPI               |
+
+---
+
+# Project Structure
+
+```
+├── app/
+│   ├── api/
+│   │   └── tasks/
+│   │       ├── route.ts          # GET /api/tasks, POST /api/tasks
+│   │       └── [id]/
+│   │           └── route.ts      # PATCH /api/tasks/:id, DELETE /api/tasks/:id
+│   ├── api-docs/
+│   │   └── page.tsx              # Swagger UI
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx                  # Server component — fetches tasks via Prisma
+├── components/
+│   ├── Taskmanager.tsx           # Orchestrates state
+│   ├── Taskform.tsx              # Add task form
+│   ├── Tasklist.tsx              # Filter bar + list
+│   └── Taskitem.tsx              # Single task row (toggle, edit, delete)
+├── lib/
+│   ├── prisma.ts                 # Prisma singleton client
+│   ├── api.ts                    # Fetch helpers (client-side)
+│   ├── swagger.ts                # Swagger configuration
+│   └── types.ts                  # Shared TypeScript types
+└── prisma/
+    └── schema.prisma
+```
+
+---
+
+# Setup & Run
+
+## 1 Install dependencies
+
+```bash
+npm install
+```
+
+---
+
+## 2 Configure environment
+
+Create a `.env` file in the project root:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/taskmanager"
+```
+
+---
+
+## 3 Run database migrations
+
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
+
+---
+
+## 4 Start the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+# API Documentation
 
-To learn more about Next.js, take a look at the following resources:
+Interactive API documentation is available via **Swagger UI**.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open in browser:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+http://localhost:3000/api-docs
+```
 
-## Deploy on Vercel
+The documentation is generated automatically using **Swagger / OpenAPI** via **next-swagger-doc**.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Swagger provides:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Interactive API testing
+- Request/response schema visualization
+- Endpoint documentation
+- Example payloads
+
+---
+
+# API Endpoints
+
+| Method | Endpoint         | Description                       |
+| ------ | ---------------- | --------------------------------- |
+| GET    | `/api/tasks`     | Return all tasks                  |
+| POST   | `/api/tasks`     | Create a new task                 |
+| PATCH  | `/api/tasks/:id` | Update title or completion status |
+| DELETE | `/api/tasks/:id` | Delete a task                     |
+
+---
+
+# Example Requests
+
+## Create Task
+
+**POST `/api/tasks`**
+
+```json
+{
+  "title": "Buy groceries"
+}
+```
+
+Response:
+
+```json
+{
+  "id": "clx123",
+  "title": "Buy groceries",
+  "completed": false,
+  "createdAt": "2026-04-09T10:20:33.000Z",
+  "updatedAt": "2026-04-09T10:20:33.000Z"
+}
+```
+
+---
+
+## Update Task
+
+**PATCH `/api/tasks/:id`**
+
+Toggle completion:
+
+```json
+{
+  "completed": true
+}
+```
+
+Edit title:
+
+```json
+{
+  "title": "Buy more groceries"
+}
+```
+
+---
+
+## Delete Task
+
+**DELETE `/api/tasks/:id`**
+
+Response:
+
+```json
+{
+  "message": "Task deleted successfully"
+}
+```
+
+---
+
+# Assumptions & Trade-offs
+
+- **Server-side initial render**: The homepage fetches tasks directly via Prisma (server component) for fast first paint, then all mutations go through API routes from the client.
+- **Optimistic-free updates**: Each task shows its own loading state to keep error handling simple.
+- **No authentication**: Authentication is intentionally excluded for simplicity.
+- **Client-side filtering**: Task filters (all / active / completed) are done in-memory since the dataset is expected to be small.
+- **Inline editing**: Double-click a task title to enter edit mode; press Escape to cancel.
+
+---
+
+# Future Improvements
+
+Possible extensions:
+
+- Authentication (JWT / OAuth)
+- Pagination for large task sets
+- Server-side filtering
+- Drag-and-drop task ordering
+- Unit + integration tests
+- Deployment with **Vercel**
+
+---
